@@ -62,3 +62,8 @@ label
     color: rgb(237, 147, 79);
     text-shadow: 1px 1px 5px black;
 }
+
+table
+{
+    border: 1px solid black;
+}

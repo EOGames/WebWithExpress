@@ -7,6 +7,11 @@
     <title>EJS Home</title>
 
     <link rel="stylesheet" href="/index.css">
+    <!-- <script src="../../GetData.js"></script> -->
+    <!-- <script type="text/javascript" src="/GetData.js"></script> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
 <body>
     <header>
@@ -22,18 +27,39 @@
                     <td class="th">Email</td>
                 </tr>
             </thead>
-
-            <tbody>
-
+                
+            <tbody id="parent">
+                
             </tbody>
         </table>
     </div>
 
+
     <script>
-        function GetData()
+         async function GetData()
         {
+            let data = [];
+            data = await axios.get('http://localhost:5700/data');
+            data = data.data;
+            console.log(data);
+            
+            for (let i = 0; i < data.length; i++)
+            {
+                let parent = document.getElementById('parent').insertRow(i);
+                let resolveData = await data[i];
+               
+                for (let key in resolveData) 
+                {
+                    console.log(key);
+                   let cell =  parent.insertCell();
+                   cell.innerHTML = resolveData[key];  
+                }
+                
+                                
+            }
             
         }
+        GetData();
     </script>
 </body>
 </html>
