@@ -17,7 +17,7 @@
     <header>
         <%-include('../partials/Header'); %>
     </header>
-
+    <input type="button" value="Delete All Data" id="deleteAllDataBtn">
     <div class="data">
         <table>
             <thead>
@@ -25,9 +25,10 @@
                     <td class="th">No</td>
                     <td class="th">Name</td>
                     <td class="th">Email</td>
+                    <td colspan="2" class="th">Action</td>
                 </tr>
             </thead>
-                
+            
             <tbody id="parent">
                 
             </tbody>
@@ -41,25 +42,70 @@
             let data = [];
             data = await axios.get('http://localhost:5700/data');
             data = data.data;
-            console.log(data);
+           // console.log(data);
             
             for (let i = 0; i < data.length; i++)
             {
                 let parent = document.getElementById('parent').insertRow(i);
                 let resolveData = await data[i];
+                let n = parent.insertCell();
+                n.innerHTML = i;
                
+
+
                 for (let key in resolveData) 
                 {
-                    console.log(key);
+                  //  console.log(key);
                    let cell =  parent.insertCell();
                    cell.innerHTML = resolveData[key];  
                 }
+
+                let action = parent.insertCell();
+                let editbtn =  document.createElement('button');
+                editbtn.innerText ='Edit';
+                editbtn.className = 'editbtn';
+                action.append(editbtn);
+                editbtn.addEventListener('click',EditButton);
+                editbtn.myParm = i;
+                
+                let action2 = parent.insertCell();
+                let deletebtn = document.createElement('button');
+                deletebtn.innerText ='Delete';
+                deletebtn.className = 'deletebtn';
+                action2.append(deletebtn);
+                deletebtn.addEventListener('click',DeleteButton);
+                deletebtn.myParm = i;
                 
                                 
             }
             
         }
         GetData();
+
+        function EditButton(evt)
+        {
+            console.log('Edit Button Pressed On '+evt.currentTarget.myParm);
+
+            localStorage.setItem('edit_id',evt.currentTarget.myParm);
+
+            window.location.href ='/edit';
+        }
+
+       async function DeleteButton(evt)
+        {
+            console.log('Delete Button Pressed on '+evt.currentTarget.myParm);
+            await axios.delete(`http://localhost:5700/delselected/${evt.currentTarget.myParm}`);
+            window.location.href ='/';
+        }
+
+        //delete all data
+        const deleteAllDataBtn = document.getElementById("deleteAllDataBtn");
+        deleteAllDataBtn.addEventListener('click',async ()=>
+        {
+           console.log('deleteAllDataBtn Pressed !');
+            await axios.delete('http://localhost:5700/deleteall');
+            window.location.href ='/';
+        });
     </script>
 </body>
 </html>
